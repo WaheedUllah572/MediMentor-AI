@@ -1,0 +1,269 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ========== Global Reset & Base Styles ========== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+  background-color: #f4f6f9;
+  color: #222;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ========== Typography ========== */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  color: #111827;
+  letter-spacing: -0.015em;
+}
+
+p {
+  font-size: 0.95rem;
+  color: #374151;
+  margin-bottom: 1rem;
+}
+
+/* ========== Buttons ========== */
+button {
+  background: linear-gradient(90deg, #2563eb, #1e40af);
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: transform 0.15s ease, box-shadow 0.2s ease,
+              background-color 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+button:hover {
+  background: linear-gradient(90deg, #1e4fc2, #1e3a8a);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ========== Inputs & Textareas ========== */
+textarea,
+input[type="text"],
+input[type="file"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 8px;
+  margin-bottom: 15px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background-color: #fff;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+textarea:focus,
+input[type="text"]:focus,
+input[type="file"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+  outline: none;
+}
+
+/* ========== Sidebar ========== */
+.sidebar {
+  width: 240px;
+  background-color: #ffffff;
+  height: 100vh;
+  border-right: 1px solid #e5e7eb;
+  padding: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+}
+
+.sidebar h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #1e3a8a;
+}
+
+.sidebar a {
+  display: block;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  color: #374151;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.sidebar a:hover {
+  background-color: #f3f4f6;
+  color: #1f2937;
+}
+
+/* ========== Responsive Sidebar ========== */
+@media (max-width: 768px) {
+  .sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid #e5e7eb;
+  }
+}
+
+/* ========== Cards (Reusable Output Containers) ========== */
+.card {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
+}
+
+.card-header {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #1e3a8a;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-body {
+  font-size: 0.95rem;
+  color: #374151;
+  line-height: 1.6;
+}
+
+/* ========== Utility Helpers ========== */
+.text-muted {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 0.75rem; }
+.mt-4 { margin-top: 1rem; }
+.mt-5 { margin-top: 1.25rem; }
+
+/* ================== Sidebar Glassmorphic Neon ================== */
+.sidebar {
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+
+.sidebar-logo {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 20px;
+  text-align: center;
+  background: linear-gradient(90deg, #60a5fa, #a78bfa, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.sidebar-toggle {
+  display: flex;
+  justify-content: center;
+  padding: 12px;
+  cursor: pointer;
+  color: #e5e7eb;
+}
+
+.sidebar-toggle svg {
+  transition: all 0.3s ease;
+}
+
+.sidebar-toggle svg:hover {
+  color: #38bdf8;
+  transform: rotate(90deg);
+}
+
+.sidebar-menu {
+  margin-top: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  margin: 6px 12px;
+  border-radius: 12px;
+  font-weight: 500;
+  color: #d1d5db;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.menu-item .icon {
+  font-size: 18px;
+  margin-right: 12px;
+}
+
+.menu-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(5px);
+}
+
+.menu-item.active {
+  background: rgba(59, 130, 246, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.6);
+  color: #fff;
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.8);
+}
+
+.sidebar-footer {
+  text-align: center;
+  padding: 15px;
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
