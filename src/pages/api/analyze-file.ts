@@ -3,10 +3,13 @@ import OpenAI from "openai";
 import formidable from "formidable";
 import fs from "fs";
 
-export const config = { api: { bodyParser: false } };
+// Disable bodyParser so formidable can handle the file
+export const config = {
+  api: { bodyParser: false },
+};
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY!,
   organization: process.env.OPENAI_ORG_ID,
   project: process.env.OPENAI_PROJECT_ID,
 });
@@ -48,20 +51,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
 
       res.status(200).json({
-        analysis: response.choices[0]?.message?.content || "⚠️ No analysis returned",
+        analysis: response.choices[0].message?.content || "No analysis returned",
       });
-    } catch (error: any) {
-      console.error("❌ Image analysis error:", error);
-
-      res.status(500).json({
-        error: error.message || "Server error",
-        details: error.response?.data || error.stack || null,
-        envCheck: {
-          OPENAI_API_KEY: process.env.OPENAI_API_KEY ? "✅ set" : "❌ missing",
-          OPENAI_ORG_ID: process.env.OPENAI_ORG_ID ? "✅ set" : "❌ missing",
-          OPENAI_PROJECT_ID: process.env.OPENAI_PROJECT_ID ? "✅ set" : "❌ missing",
-        },
-      });
+    } catch (e: any) {
+      console.error("❌ Image analysis error:", e);
+      res.status(500).json({ error: e.message });
     }
   });
 }

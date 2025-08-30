@@ -1,10 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import OpenAI from "openai";
 
+// Initialize OpenAI with project + org support
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  organization: process.env.OPENAI_ORG_ID,
-  project: process.env.OPENAI_PROJECT_ID,
+  apiKey: process.env.OPENAI_API_KEY!,       // sk-proj-xxx
+  organization: process.env.OPENAI_ORG_ID,   // org-xxx
+  project: process.env.OPENAI_PROJECT_ID,    // proj_xxx
 });
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -13,7 +14,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const { query } = req.body;
-
   if (!query || query.trim().length === 0) {
     return res.status(400).json({ error: "No query provided." });
   }
@@ -28,19 +28,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     res.status(200).json({
-      reply: response.choices[0]?.message?.content || "⚠️ No reply generated.",
+      reply: response.choices[0].message?.content || "No reply generated.",
     });
   } catch (error: any) {
-    console.error("❌ Agent Mode error:", error);
-
-    res.status(500).json({
-      error: error.message || "Server error",
-      details: error.response?.data || error.stack || null,
-      envCheck: {
-        OPENAI_API_KEY: process.env.OPENAI_API_KEY ? "✅ set" : "❌ missing",
-        OPENAI_ORG_ID: process.env.OPENAI_ORG_ID ? "✅ set" : "❌ missing",
-        OPENAI_PROJECT_ID: process.env.OPENAI_PROJECT_ID ? "✅ set" : "❌ missing",
-      },
-    });
+    console.error("❌ Agent Mode error:", error.response?.data || error.message || error);
+    res.status(500).json({ error: error.message || "Unknown error" });
   }
 }
