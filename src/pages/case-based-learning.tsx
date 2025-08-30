@@ -11,7 +11,11 @@ export default function CaseBasedLearning() {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
-    if (!caseText.trim()) return alert("⚠️ Please enter a case description.");
+    if (!caseText.trim()) {
+      alert("⚠️ Please enter a case description.");
+      return;
+    }
+
     setLoading(true);
     setResult("");
 
@@ -19,7 +23,7 @@ export default function CaseBasedLearning() {
       const res = await fetch("/api/case-learning", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ caseText }), // ✅ match backend
+        body: JSON.stringify({ caseText }), // ✅ matches backend
       });
 
       if (!res.ok) throw new Error(`API error: ${res.status}`);
@@ -27,10 +31,11 @@ export default function CaseBasedLearning() {
       const data = await res.json();
       setResult(data.analysis || "⚠️ No analysis received from AI.");
     } catch (err) {
-      console.error("❌ Error:", err);
+      console.error("❌ Case-Based Learning error:", err);
       setResult("⚠️ Error connecting to AI service.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleDownloadPDF = () => {
@@ -57,12 +62,45 @@ export default function CaseBasedLearning() {
   return (
     <div style={{ display: "flex" }}>
       <Sidebar />
-      <div style={{ flex: 1, display: "flex", justifyContent: "center", padding: "40px", backgroundColor: "#f3f4f6", minHeight: "100vh" }}>
-        <div style={{ background: "white", borderRadius: "18px", padding: "30px", width: "100%", maxWidth: "750px", boxShadow: "0 6px 20px rgba(0,0,0,0.1)" }}>
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          justifyContent: "center",
+          padding: "40px",
+          backgroundColor: "#f3f4f6",
+          minHeight: "100vh",
+        }}
+      >
+        <div
+          style={{
+            background: "white",
+            borderRadius: "18px",
+            padding: "30px",
+            width: "100%",
+            maxWidth: "750px",
+            boxShadow: "0 6px 20px rgba(0,0,0,0.1)",
+          }}
+        >
           {/* Header */}
-          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "20px" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              marginBottom: "20px",
+            }}
+          >
             <FaStethoscope size={28} color="#2563eb" />
-            <h2 style={{ fontSize: "1.6rem", fontWeight: 700, color: "#1e3a8a" }}>Case-Based Learning</h2>
+            <h2
+              style={{
+                fontSize: "1.6rem",
+                fontWeight: 700,
+                color: "#1e3a8a",
+              }}
+            >
+              Case-Based Learning
+            </h2>
           </div>
 
           <textarea
@@ -70,7 +108,14 @@ export default function CaseBasedLearning() {
             onChange={(e) => setCaseText(e.target.value)}
             placeholder="Enter a medical case description..."
             rows={6}
-            style={{ width: "100%", padding: "14px", borderRadius: "12px", border: "1px solid #d1d5db", fontSize: "1rem", marginBottom: "20px" }}
+            style={{
+              width: "100%",
+              padding: "14px",
+              borderRadius: "12px",
+              border: "1px solid #d1d5db",
+              fontSize: "1rem",
+              marginBottom: "20px",
+            }}
           />
 
           <button
@@ -78,7 +123,9 @@ export default function CaseBasedLearning() {
             disabled={loading}
             style={{
               width: "100%",
-              background: loading ? "linear-gradient(90deg, #9ca3af, #6b7280)" : "linear-gradient(90deg, #2563eb, #1e40af)",
+              background: loading
+                ? "linear-gradient(90deg, #9ca3af, #6b7280)"
+                : "linear-gradient(90deg, #2563eb, #1e40af)",
               color: "white",
               border: "none",
               borderRadius: "12px",
@@ -94,8 +141,20 @@ export default function CaseBasedLearning() {
 
           {result && (
             <>
-              <div style={{ marginTop: "25px", padding: "22px", background: "#f9fafb", borderRadius: "14px", fontSize: "1rem", color: "#111827", boxShadow: "inset 0 2px 6px rgba(0,0,0,0.05)" }}>
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{result}</ReactMarkdown>
+              <div
+                style={{
+                  marginTop: "25px",
+                  padding: "22px",
+                  background: "#f9fafb",
+                  borderRadius: "14px",
+                  fontSize: "1rem",
+                  color: "#111827",
+                  boxShadow: "inset 0 2px 6px rgba(0,0,0,0.05)",
+                }}
+              >
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {result}
+                </ReactMarkdown>
               </div>
 
               <button
