@@ -3,12 +3,13 @@ import OpenAI from "openai";
 import formidable from "formidable";
 import fs from "fs";
 
-// Disable bodyParser so formidable can handle the file
-export const config = {
-  api: { bodyParser: false },
-};
+export const config = { api: { bodyParser: false } };
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+  organization: process.env.OPENAI_ORG_ID,
+  project: process.env.OPENAI_PROJECT_ID,
+});
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
@@ -35,32 +36,32 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         {
           role: "user",
           content: [
-            {
-              type: "text",
-              text: "Please analyze this medical image in detail.",
-            },
-            {
-              type: "image_url",
-              image_url: {
-                url: `data:${fileType};base64,${imageBase64}`,
-              },
-            },
+            { type: "text", text: "Please analyze this medical image in detail." },
+            { type: "image_url", image_url: { url: `data:${fileType};base64,${imageBase64}` } },
           ],
         },
       ];
 
-      // ✅ Now actually call OpenAI
       const response = await openai.chat.completions.create({
         model: "gpt-4o-mini",
         messages,
       });
 
-      return res.status(200).json({
-        analysis: response.choices[0].message?.content || "No analysis returned",
+      res.status(200).json({
+        analysis: response.choices[0]?.message?.content || "⚠️ No analysis returned",
       });
-    } catch (e: any) {
-      console.error("❌ Image analysis error:", e);
-      return res.status(500).json({ error: e.message });
+    } catch (error: any) {
+      console.error("❌ Image analysis error:", error);
+
+      res.status(500).json({
+        error: error.message || "Server error",
+        details: error.response?.data || error.stack || null,
+        envCheck: {
+          OPENAI_API_KEY: process.env.OPENAI_API_KEY ? "✅ set" : "❌ missing",
+          OPENAI_ORG_ID: process.env.OPENAI_ORG_ID ? "✅ set" : "❌ missing",
+          OPENAI_PROJECT_ID: process.env.OPENAI_PROJECT_ID ? "✅ set" : "❌ missing",
+        },
+      });
     }
   });
 }
