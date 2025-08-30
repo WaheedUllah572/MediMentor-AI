@@ -21,15 +21,9 @@ const sectionIcons: Record<string, string> = {
 export default function AgentMode() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
-  const [apiBase, setApiBase] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  // ✅ Correct API base setup (env var for prod, localhost fallback for dev)
-  useEffect(() => {
-    setApiBase(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000");
-  }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -44,9 +38,9 @@ export default function AgentMode() {
     setLoading(true);
 
     try {
-      console.log("📡 Sending request to:", `${apiBase}/api/agent-mode`);
+      console.log("📡 Sending request to: /api/agent-mode");
 
-      const res = await fetch(`${apiBase}/api/agent-mode`, {
+      const res = await fetch("/api/agent-mode", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: input }),
@@ -60,7 +54,7 @@ export default function AgentMode() {
 
       const aiMsg: Message = {
         sender: "ai",
-        text: data.reply || "No response from AI",
+        text: data.reply || "⚠️ No response from AI",
       };
       setMessages((prev) => [...prev, aiMsg]);
     } catch (err: any) {
@@ -81,7 +75,6 @@ export default function AgentMode() {
     setShowEmojiPicker(false);
   };
 
-  // 🩺 Helper: Add icons for section headings
   const addSectionIcon = (text: string) => {
     const lower = text.toLowerCase();
     if (lower.includes("diagnosis")) return `${sectionIcons.diagnosis} ${text}`;
@@ -118,7 +111,6 @@ export default function AgentMode() {
             alignItems: "center",
             gap: "10px",
             color: "#1e3a8a",
-            fontFamily: "Inter, Segoe UI, Roboto, sans-serif",
           }}
         >
           🤖 Agent Mode
@@ -162,11 +154,9 @@ export default function AgentMode() {
                       ? "0 3px 10px rgba(0,0,0,0.1)"
                       : "0 2px 6px rgba(0,0,0,0.2)",
                   textAlign: "left",
-                  fontFamily: "Inter, Segoe UI, Roboto, sans-serif",
                   overflowWrap: "break-word",
                   borderLeft:
                     msg.sender === "ai" ? "5px solid #2563eb" : "none",
-                  transition: "transform 0.2s ease",
                 }}
               >
                 {msg.sender === "ai" ? (
@@ -174,43 +164,9 @@ export default function AgentMode() {
                     remarkPlugins={[remarkGfm]}
                     components={{
                       h1: (props) => (
-                        <h1
-                          style={{
-                            fontSize: "1.4rem",
-                            fontWeight: "700",
-                            margin: "14px 0",
-                            color: "#1e40af",
-                          }}
-                          {...props}
-                        >
+                        <h1 style={{ fontSize: "1.4rem", fontWeight: "700" }} {...props}>
                           {addSectionIcon(String(props.children))}
                         </h1>
-                      ),
-                      h2: (props) => (
-                        <h2
-                          style={{
-                            fontSize: "1.2rem",
-                            fontWeight: "600",
-                            margin: "10px 0",
-                            color: "#2563eb",
-                          }}
-                          {...props}
-                        >
-                          {addSectionIcon(String(props.children))}
-                        </h2>
-                      ),
-                      h3: (props) => (
-                        <h3
-                          style={{
-                            fontSize: "1.1rem",
-                            fontWeight: "600",
-                            margin: "8px 0",
-                            color: "#374151",
-                          }}
-                          {...props}
-                        >
-                          {addSectionIcon(String(props.children))}
-                        </h3>
                       ),
                     }}
                   >
@@ -222,15 +178,8 @@ export default function AgentMode() {
               </div>
             </div>
           ))}
-
           {loading && (
-            <div
-              style={{
-                color: "#6b7280",
-                fontSize: "0.95rem",
-                margin: "10px 0",
-              }}
-            >
+            <div style={{ color: "#6b7280", fontSize: "0.95rem" }}>
               MediMentor AI is thinking...
             </div>
           )}
@@ -256,14 +205,7 @@ export default function AgentMode() {
             onClick={() => setShowEmojiPicker(!showEmojiPicker)}
           />
           {showEmojiPicker && (
-            <div
-              style={{
-                position: "absolute",
-                bottom: "60px",
-                left: "10px",
-                zIndex: 1000,
-              }}
-            >
+            <div style={{ position: "absolute", bottom: "60px", left: "10px", zIndex: 1000 }}>
               <EmojiPicker onEmojiClick={handleEmojiClick} />
             </div>
           )}
@@ -279,16 +221,11 @@ export default function AgentMode() {
               outline: "none",
               fontSize: "1rem",
               padding: "10px",
-              fontFamily: "Inter, Segoe UI, Roboto, sans-serif",
             }}
           />
           <FaPaperPlane
             size={22}
-            style={{
-              color: "#2563eb",
-              cursor: "pointer",
-              marginLeft: "12px",
-            }}
+            style={{ color: "#2563eb", cursor: "pointer", marginLeft: "12px" }}
             onClick={sendMessage}
           />
         </div>

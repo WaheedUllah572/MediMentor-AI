@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { FaMicroscope, FaFilePdf } from "react-icons/fa";
 import ReactMarkdown from "react-markdown";
@@ -10,12 +10,6 @@ export default function ImageAnalysis() {
   const [preview, setPreview] = useState<string | null>(null);
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
-  const [apiBase, setApiBase] = useState("");
-
-  useEffect(() => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-    setApiBase(apiUrl);
-  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -39,7 +33,7 @@ export default function ImageAnalysis() {
     formData.append("file", file);
 
     try {
-      const res = await fetch(`${apiBase}/api/analyze-file`, {
+      const res = await fetch("/api/analyze-file", {
         method: "POST",
         body: formData,
       });
@@ -79,49 +73,19 @@ export default function ImageAnalysis() {
   return (
     <div style={{ display: "flex" }}>
       <Sidebar />
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "flex-start",
-          padding: "40px",
-          backgroundColor: "#f3f4f6",
-          minHeight: "100vh",
-        }}
-      >
-        <div
-          style={{
-            background: "white",
-            borderRadius: "18px",
-            padding: "30px",
-            width: "100%",
-            maxWidth: "750px",
-            boxShadow: "0 6px 20px rgba(0,0,0,0.1)",
-          }}
-        >
+      <div style={{ flex: 1, display: "flex", justifyContent: "center", padding: "40px", backgroundColor: "#f3f4f6", minHeight: "100vh" }}>
+        <div style={{ background: "white", borderRadius: "18px", padding: "30px", width: "100%", maxWidth: "750px", boxShadow: "0 6px 20px rgba(0,0,0,0.1)" }}>
           {/* Header */}
           <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "20px" }}>
             <FaMicroscope size={28} color="#2563eb" />
-            <h2 style={{ fontSize: "1.6rem", fontWeight: 700, color: "#1e3a8a" }}>
-              Image Analysis
-            </h2>
+            <h2 style={{ fontSize: "1.6rem", fontWeight: 700, color: "#1e3a8a" }}>Image Analysis</h2>
           </div>
           <p style={{ color: "#4b5563", marginBottom: "20px" }}>
             Upload a medical image (JPG, JPEG, PNG) and MediMentor AI will generate a structured report.
           </p>
 
           {/* Upload Section */}
-          <div
-            style={{
-              background: "#f9fafb",
-              border: "2px dashed #2563eb",
-              borderRadius: "12px",
-              padding: "20px",
-              textAlign: "center",
-              marginBottom: "20px",
-            }}
-          >
+          <div style={{ background: "#f9fafb", border: "2px dashed #2563eb", borderRadius: "12px", padding: "20px", textAlign: "center", marginBottom: "20px" }}>
             <input
               type="file"
               accept="image/png, image/jpeg, image/jpg"
@@ -139,12 +103,7 @@ export default function ImageAnalysis() {
               <img
                 src={preview}
                 alt="Preview"
-                style={{
-                  maxWidth: "100%",
-                  maxHeight: "250px",
-                  borderRadius: "12px",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                }}
+                style={{ maxWidth: "100%", maxHeight: "250px", borderRadius: "12px", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
               />
             </div>
           )}
@@ -155,9 +114,7 @@ export default function ImageAnalysis() {
             disabled={loading}
             style={{
               width: "100%",
-              background: loading
-                ? "linear-gradient(90deg, #9ca3af, #6b7280)"
-                : "linear-gradient(90deg, #2563eb, #1e40af)",
+              background: loading ? "linear-gradient(90deg, #9ca3af, #6b7280)" : "linear-gradient(90deg, #2563eb, #1e40af)",
               color: "white",
               border: "none",
               borderRadius: "12px",
@@ -174,17 +131,7 @@ export default function ImageAnalysis() {
           {/* Results */}
           {result && (
             <>
-              <div
-                style={{
-                  marginTop: "25px",
-                  padding: "22px",
-                  background: "#f9fafb",
-                  borderRadius: "14px",
-                  fontSize: "1rem",
-                  color: "#111827",
-                  boxShadow: "inset 0 2px 6px rgba(0,0,0,0.05)",
-                }}
-              >
+              <div style={{ marginTop: "25px", padding: "22px", background: "#f9fafb", borderRadius: "14px", fontSize: "1rem", color: "#111827", boxShadow: "inset 0 2px 6px rgba(0,0,0,0.05)" }}>
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{result}</ReactMarkdown>
               </div>
 

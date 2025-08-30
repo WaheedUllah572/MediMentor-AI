@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { FaQuestionCircle } from "react-icons/fa";
 
@@ -18,15 +18,6 @@ export default function McqTutor() {
   const [selected, setSelected] = useState<string | null>(null);
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
-  const [apiBase, setApiBase] = useState("");
-
-  // ✅ Use Render backend in prod, localhost in dev
-  useEffect(() => {
-    const apiUrl =
-      process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-    setApiBase(apiUrl);
-    console.log("✅ MCQ Tutor API Base:", apiUrl);
-  }, []);
 
   const handleSubmit = async () => {
     if (!question.trim()) return;
@@ -38,7 +29,7 @@ export default function McqTutor() {
       .join("\n")}\nUser selected: ${selected || "None"}`;
 
     try {
-      const res = await fetch(`${apiBase}/api/mcq-tutor`, {
+      const res = await fetch("/api/mcq-tutor", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: formattedQuestion }),
@@ -69,7 +60,6 @@ export default function McqTutor() {
           flex: 1,
           display: "flex",
           justifyContent: "center",
-          alignItems: "flex-start",
           padding: "40px",
           backgroundColor: "#f9fafb",
           minHeight: "100vh",
@@ -86,22 +76,14 @@ export default function McqTutor() {
           }}
         >
           {/* Header */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-              marginBottom: "20px",
-            }}
-          >
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "20px" }}>
             <FaQuestionCircle size={28} color="#2563eb" />
             <h2 style={{ fontSize: "1.5rem", fontWeight: 600, margin: 0 }}>
               MCQ Tutor
             </h2>
           </div>
           <p style={{ color: "#4b5563", marginBottom: "20px" }}>
-            Enter a multiple-choice question. MediMentor AI will explain the
-            correct answer and reasoning.
+            Enter a multiple-choice question. MediMentor AI will explain the correct answer and reasoning.
           </p>
 
           {/* Question Input */}
@@ -137,17 +119,10 @@ export default function McqTutor() {
                     : "1px solid #d1d5db",
                 backgroundColor: selected === opt.label ? "#eff6ff" : "#f9fafb",
                 cursor: "pointer",
-                transition: "all 0.2s ease",
               }}
               onClick={() => setSelected(opt.label)}
             >
-              <span
-                style={{
-                  fontWeight: 600,
-                  marginRight: "10px",
-                  color: "#111827",
-                }}
-              >
+              <span style={{ fontWeight: 600, marginRight: "10px" }}>
                 {opt.label}.
               </span>
               <input
@@ -183,8 +158,6 @@ export default function McqTutor() {
               fontWeight: 600,
               cursor: loading ? "not-allowed" : "pointer",
               marginTop: "15px",
-              transition: "all 0.2s ease",
-              boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
             }}
           >
             {loading ? "Analyzing..." : "Get AI Answer"}
@@ -201,7 +174,6 @@ export default function McqTutor() {
                 whiteSpace: "pre-wrap",
                 fontSize: "1rem",
                 color: "#111827",
-                boxShadow: "inset 0 2px 6px rgba(0,0,0,0.05)",
               }}
             >
               {result}

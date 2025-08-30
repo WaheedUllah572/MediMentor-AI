@@ -1,8 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import OpenAI from "openai";
 
-// Initialize OpenAI client with API key
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+// Initialize OpenAI with project + org support
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,       // sk-proj-xxx
+  organization: process.env.OPENAI_ORG_ID,  // org-xxx
+  project: process.env.OPENAI_PROJECT_ID,   // proj_xxx
+});
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
@@ -24,9 +28,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       ],
     });
 
-    res.status(200).json({ reply: response.choices[0].message.content });
+    return res.status(200).json({
+      reply: response.choices[0].message?.content || "No reply generated.",
+    });
   } catch (error: any) {
-    console.error("❌ Agent Mode error:", error);
-    res.status(500).json({ error: error.message });
+    console.error("❌ Agent Mode error:", error.response?.data || error.message || error);
+    return res.status(500).json({ error: error.message || "Unknown error" });
   }
 }
